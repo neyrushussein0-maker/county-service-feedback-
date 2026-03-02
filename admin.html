@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — CountyServe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #1a6b3a;
+      --green-light: #2d9b56;
+      --gold: #c8a84b;
+      --dark: #111a14;
+      --mid: #3a4a3e;
+      --soft: #e8ede9;
+      --cream: #f8f5ee;
+      --red: #c0392b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ===================== LOGIN ===================== */
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--dark) 0%, var(--green) 100%);
+      padding: 2rem;
+    }
+
+    .login-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+      animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .login-logo { text-align: center; margin-bottom: 2rem; }
+    .login-logo .icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .login-logo h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--dark); }
+    .login-logo p  { color: var(--mid); font-size: 0.85rem; margin-top: 0.3rem; }
+
+    .form-group { margin-bottom: 1.3rem; }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid #d5ddd8;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      background: #fafbfa;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--green-light);
+      box-shadow: 0 0 0 3px rgba(45,155,86,0.12);
+      background: #fff;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .login-btn:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,107,58,0.35); }
+
+    .login-error {
+      display: none;
+      background: #fdecea;
+      color: var(--red);
+      border: 1px solid #f5c6c2;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      font-size: 0.88rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .login-error.show { display: block; animation: shake 0.4s ease; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
+    }
+
+    .login-hint { text-align: center; margin-top: 1.2rem; font-size: 0.8rem; color: #bbb; }
+    .login-hint strong { color: var(--green); }
+
+    .back-link { text-align: center; margin-top: 1rem; }
+    .back-link a { color: rgba(255,255,255,0.5); font-size: 0.8rem; text-decoration: none; }
+    .back-link a:hover { color: #fff; }
+
+    /* ===================== DASHBOARD ===================== */
+    #dashboard { display: none; }
+
+    /* Top nav bar */
+    .admin-nav {
+      background: var(--dark);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    }
+
+    .admin-nav-logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 1.2rem;
+    }
+
+    .admin-nav-logo span { color: rgba(255,255,255,0.4); font-size: 0.72rem; display: block; letter-spacing: 2px; text-transform: uppercase; font-weight: 300; font-family: 'DM Sans', sans-serif; }
+
+    .admin-nav-right { display: flex; align-items: center; gap: 1rem; }
+
+    .admin-user-badge {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.07);
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .logout-btn {
+      background: rgba(192,57,43,0.15);
+      color: #e74c3c;
+      border: 1px solid rgba(192,57,43,0.3);
+      padding: 0.45rem 1rem;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover { background: var(--red); color: #fff; }
+
+    /* Sub nav */
+    .admin-subnav {
+      background: #fff;
+      border-bottom: 2px solid #e0e5e2;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+
+    .admin-subnav button {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--mid);
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      margin-bottom: -2px;
+    }
+
+    .admin-subnav button:hover  { color: var(--green); }
+    .admin-subnav button.active { color: var(--green); border-bottom-color: var(--green); font-weight: 600; }
+
+    .portal-link {
+      margin-left: auto;
+      color: var(--gold) !important;
+      font-size: 0.82rem !important;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid rgba(200,168,75,0.3) !important;
+      background: rgba(200,168,75,0.08) !important;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .portal-link:hover { background: rgba(200,168,75,0.2) !important; }
+
+    /* Sections */
+    .admin-section { display: none; }
+    .admin-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .section { padding: 2.5rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--dark); margin-bottom: 0.4rem; }
+    .section-sub   { color: var(--mid); font-size: 0.92rem; margin-bottom: 2rem; }
+
+    /* Stat cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #e0e5e2;
+      border-top: 4px solid var(--green);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:nth-child(2) { border-top-color: var(--gold); }
+    .stat-card:nth-child(3) { border-top-color: #3498db; }
+    .stat-card:nth-child(4) { border-top-color: var(--red); }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.07); }
+
+    .sc-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); font-weight: 600; }
+    .sc-value { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--dark); margin: 0.3rem 0; }
+    .sc-sub   { font-size: 0.78rem; color: #aaa; }
+
+    /* Table */
+    .table-card { background: #fff; border-radius: 12px; border: 1px solid #e0e5e2; overflow: hidden; }
+
+    .table-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid #e0e5e2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .table-header h3 { font-size: 1rem; font-weight: 600; }
+
+    .search-input {
+      padding: 0.5rem 1rem;
+      border: 1.5px solid #d5ddd8;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      outline: none;
+      width: 260px;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--green-light); }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--soft); }
+    th { text-align: left; padding: 0.9rem 1.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--mid); font-weight: 600; }
+    td { padding: 0.85rem 1.2rem; font-size: 0.88rem; border-bottom: 1px solid #f0f4f1; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbfa; }
+
+    .t-empty { text-align: center; color: #aaa; padding: 2.5rem !important; }
+
+    /* Pills */
+    .pill       { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 50px; font-size: 0.72rem; font-weight: 600; }
+    .pill-green { background: #e6f5ec; color: var(--green); }
+    .pill-gold  { background: #fdf6e3; color: #9a7b1e; }
+    .pill-red   { background: #fdecea; color: var(--red); }
+    .pill-blue  { background: #eaf3fb; color: #2471a3; }
+
+    .del-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1rem; padding: 0.2rem 0.5rem; border-radius: 4px; transition: all 0.2s; }
+    .del-btn:hover { color: var(--red); background: #fdecea; }
+
+    /* Charts */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    .chart-card { background: #fff; border-radius: 12px; border: 1px solid #e0e5e2; padding: 1.5rem; }
+    .chart-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 1.2rem; }
+
+    .no-data { color: #aaa; font-size: 0.88rem; }
+
+    .bar-chart { display: flex; flex-direction: column; gap: 0.8rem; }
+    .bar-row   { display: flex; align-items: center; gap: 0.75rem; }
+    .bar-label { font-size: 0.78rem; color: var(--mid); width: 130px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-wrap  { flex: 1; background: var(--soft); border-radius: 50px; height: 10px; overflow: hidden; }
+    .bar-fill  { height: 100%; background: var(--green); border-radius: 50px; transition: width 0.6s ease; }
+    .bar-num   { font-size: 0.78rem; color: var(--mid); width: 24px; text-align: right; }
+
+    .rating-bars { display: flex; flex-direction: column; gap: 0.7rem; }
+    .r-row   { display: flex; align-items: center; gap: 0.75rem; }
+    .r-label { font-size: 0.8rem; color: var(--gold); width: 36px; flex-shrink: 0; font-weight: 600; }
+    .r-wrap  { flex: 1; background: var(--soft); border-radius: 50px; height: 10px; overflow: hidden; }
+    .r-fill  { height: 100%; background: var(--gold); border-radius: 50px; transition: width 0.6s ease; }
+    .r-num   { font-size: 0.78rem; color: var(--mid); width: 24px; text-align: right; }
+
+    /* Settings */
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    .settings-card { background: #fff; border-radius: 12px; border: 1px solid #e0e5e2; padding: 1.8rem; }
+    .settings-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 1.2rem; border-bottom: 1px solid #e0e5e2; padding-bottom: 0.8rem; }
+
+    .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid #f0f4f1; font-size: 0.88rem; }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-row span:first-child { color: var(--mid); }
+
+    .toggle { position: relative; width: 40px; height: 22px; }
+    .toggle input { display: none; }
+    .toggle-slider { position: absolute; inset: 0; background: #d5ddd8; border-radius: 50px; cursor: pointer; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .action-btn { border: none; padding: 0.4rem 1rem; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .green-btn  { background: var(--soft); color: var(--green); border: 1px solid #c5d8c9; }
+    .green-btn:hover { background: var(--green); color: #fff; }
+    .red-btn    { background: #fdecea; color: var(--red); border: 1px solid #f5c6c2; }
+    .red-btn:hover { background: var(--red); color: #fff; }
+
+    /* Footer */
+    footer { background: var(--dark); color: rgba(255,255,255,0.4); text-align: center; padding: 1.5rem; font-size: 0.8rem; }
+
+    @media (max-width: 768px) {
+      .charts-grid, .settings-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== LOGIN ===================== -->
+<div id="loginPage">
+  <div style="width:100%;max-width:420px;">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="icon">🏛️</div>
+        <h2>Admin Portal</h2>
+        <p>CountyServe — Restricted Access</p>
+      </div>
+
+      <div class="login-error" id="loginError">❌ Invalid username or password.</div>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" placeholder="Enter admin username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter password">
+        </div>
+        <button type="submit" class="login-btn">🔐 Login to Dashboard</button>
+      </form>
+
+    </div>
+
+    <div class="back-link" style="margin-top:1.2rem;">
+      <a href="index.html">← Back to Citizen Portal</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DASHBOARD ===================== -->
+<div id="dashboard">
+
+  <!-- Top nav -->
+  <div class="admin-nav">
+    <div class="admin-nav-logo">
+      🏛️ CountyServe
+      <span>Admin Dashboard</span>
+    </div>
+    <div class="admin-nav-right">
+      <div class="admin-user-badge">👤 Admin</div>
+      <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- Sub nav -->
+  <div class="admin-subnav">
+    <button class="active" onclick="showSection('overview')"     id="sub-overview">📊 Overview</button>
+    <button onclick="showSection('all-feedback')"                id="sub-all-feedback">💬 All Feedback</button>
+    <button onclick="showSection('analytics')"                   id="sub-analytics">📈 Analytics</button>
+    <button onclick="showSection('settings')"                    id="sub-settings">⚙️ Settings</button>
+    <a href="index.html" class="portal-link">🌍 Citizen Portal →</a>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="sec-overview" class="admin-section active">
+    <div class="section">
+      <h2 class="section-title">Dashboard Overview</h2>
+      <p class="section-sub">Welcome back, Admin — here's a summary of all citizen feedback</p>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="sc-label">Total Feedback</div><div class="sc-value" id="ov-total">0</div><div class="sc-sub">All submissions</div></div>
+        <div class="stat-card"><div class="sc-label">Average Rating</div><div class="sc-value" id="ov-avg">—</div><div class="sc-sub">Out of 5 stars</div></div>
+        <div class="stat-card"><div class="sc-label">5★ Excellent</div><div class="sc-value" id="ov-five">0</div><div class="sc-sub">Highest rated</div></div>
+        <div class="stat-card"><div class="sc-label">Low Ratings</div><div class="sc-value" id="ov-low">0</div><div class="sc-sub">Rated 1 or 2 stars</div></div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Recent Submissions</h3>
+          <span style="font-size:0.82rem;color:#aaa;">Last 5 entries</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Service</th><th>Rating</th><th>Date</th></tr></thead>
+            <tbody id="recentTable"><tr><td colspan="4" class="t-empty">No feedback yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALL FEEDBACK -->
+  <div id="sec-all-feedback" class="admin-section">
+    <div class="section">
+      <h2 class="section-title">All Feedback</h2>
+      <p class="section-sub">Browse, search and manage every submission</p>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Submissions Table</h3>
+          <input class="search-input" type="text" placeholder="🔍 Search name, service, message..." oninput="searchTable(this.value)">
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Service</th><th>Rating</th><th>Message</th><th>Location</th><th>Date</th><th></th></tr></thead>
+            <tbody id="allTable"><tr><td colspan="8" class="t-empty">No feedback yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div id="sec-analytics" class="admin-section">
+    <div class="section">
+      <h2 class="section-title">Analytics</h2>
+      <p class="section-sub">Visual breakdown of citizen feedback data</p>
+      <div class="charts-grid">
+        <div class="chart-card"><h3>📊 Feedback by Service</h3><div class="bar-chart" id="serviceChart"><p class="no-data">No data yet.</p></div></div>
+        <div class="chart-card"><h3>⭐ Rating Distribution</h3><div class="rating-bars" id="ratingChart"><p class="no-data">No data yet.</p></div></div>
+        <div class="chart-card"><h3>📝 Summary Statistics</h3><div id="summaryStats" class="no-data">No data available yet.</div></div>
+        <div class="chart-card" style="text-align:center;"><h3>🏆 Top Rated Service</h3><div id="topService" style="padding:1.5rem 0;"><div style="font-size:3.5rem;">🏅</div><div class="no-data" style="margin-top:0.5rem;">No data yet</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="sec-settings" class="admin-section">
+    <div class="section">
+      <h2 class="section-title">Settings</h2>
+      <p class="section-sub">Admin configuration and data management</p>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>🔐 Admin Credentials</h3>
+          <div class="setting-row"><span>Username</span><strong>admin</strong></div>
+          <div class="setting-row"><span>Password</span><strong>admin123</strong></div>
+          <div class="setting-row"><span>Role</span><span class="pill pill-green">Super Admin</span></div>
+          <div class="setting-row"><span>Access</span><span class="pill pill-blue">Full Access</span></div>
+        </div>
+        <div class="settings-card">
+          <h3>⚙️ Portal Settings</h3>
+          <div class="setting-row"><span>Public Feedback</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Show Reports</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Email Alerts</span><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Anonymous OK</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3>🗄️ Data Management</h3>
+          <div class="setting-row"><span>Total Records</span><strong id="set-total">0</strong></div>
+          <div class="setting-row"><span>Storage Used</span><strong id="set-storage">0 KB</strong></div>
+          <div class="setting-row"><span>Export</span><button class="action-btn green-btn" onclick="exportCSV()">📥 Export CSV</button></div>
+          <div class="setting-row"><span>Clear All</span><button class="action-btn red-btn" onclick="adminClear()">🗑 Delete All</button></div>
+        </div>
+        <div class="settings-card">
+          <h3>ℹ️ System Info</h3>
+          <div class="setting-row"><span>Portal Name</span><strong>CountyServe</strong></div>
+          <div class="setting-row"><span>Version</span><span class="pill pill-gold">v1.0.0</span></div>
+          <div class="setting-row"><span>Storage</span><strong>LocalStorage</strong></div>
+          <div class="setting-row"><span>Status</span><span class="pill pill-green">● Online</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2024 CountyServe Admin Portal · Restricted Access</footer>
+
+</div><!-- /dashboard -->
+
+<script>
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'admin123';
+
+  // ============ LOGIN ============
+  function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+    const err  = document.getElementById('loginError');
+
+    if (user === ADMIN_USER && pass === ADMIN_PASS) {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadDashboard();
+    } else {
+      err.classList.remove('show');
+      void err.offsetWidth;
+      err.classList.add('show');
+    }
+  }
+
+  // ============ LOGOUT ============
+  function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+      document.getElementById('dashboard').style.display  = 'none';
+      document.getElementById('loginPage').style.display  = 'flex';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+  }
+
+  // ============ SUB NAV ============
+  function showSection(id) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.admin-subnav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    document.getElementById('sub-' + id).classList.add('active');
+    if (id === 'analytics') renderAnalytics();
+  }
+
+  // ============ GET FEEDBACK ============
+  function getFeedback() {
+    try { return JSON.parse(localStorage.getItem('county_feedback')) || []; }
+    catch { return []; }
+  }
+
+  // ============ LOAD DASHBOARD ============
+  function loadDashboard() {
+    const data  = getFeedback();
+    const total = data.length;
+    const avg   = total ? (data.reduce((s,d) => s + d.rating, 0) / total).toFixed(1) : '—';
+
+    document.getElementById('ov-total').textContent = total;
+    document.getElementById('ov-avg').textContent   = total ? avg + '★' : '—';
+    document.getElementById('ov-five').textContent  = data.filter(d => d.rating === 5).length;
+    document.getElementById('ov-low').textContent   = data.filter(d => d.rating <= 2).length;
+    document.getElementById('set-total').textContent   = total;
+    document.getElementById('set-storage').textContent = (new Blob([JSON.stringify(data)]).size / 1024).toFixed(1) + ' KB';
+
+    // Recent table
+    const recent = data.slice(0, 5);
+    document.getElementById('recentTable').innerHTML = recent.length === 0
+      ? '<tr><td colspan="4" class="t-empty">No feedback yet.</td></tr>'
+      : recent.map(d => `
+          <tr>
+            <td><strong>${esc(d.name)}</strong></td>
+            <td><span class="pill pill-green">${esc(d.service)}</span></td>
+            <td style="color:var(--gold);">${'★'.repeat(d.rating)}${'☆'.repeat(5-d.rating)}</td>
+            <td style="color:#aaa;">${d.date}</td>
+          </tr>`).join('');
+
+    renderAllTable(data);
+  }
+
+  // ============ ALL TABLE ============
+  function renderAllTable(data) {
+    const tbody = document.getElementById('allTable');
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="8" class="t-empty">No feedback yet.</td></tr>'; return; }
+
+    tbody.innerHTML = data.map((d, i) => `
+      <tr>
+        <td style="color:#aaa;">${i+1}</td>
+        <td><strong>${esc(d.name)}</strong><br><span style="color:#aaa;font-size:0.76rem;">${d.email ? esc(d.email) : 'Anonymous'}</span></td>
+        <td style="font-size:0.82rem;">${esc(d.service)}</td>
+        <td><span class="pill ${d.rating>=4?'pill-green':d.rating===3?'pill-gold':'pill-red'}">${'★'.repeat(d.rating)} ${d.rating}/5</span></td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.82rem;color:#666;" title="${esc(d.message)}">${esc(d.message)}</td>
+        <td style="color:#aaa;font-size:0.82rem;">${d.location||'—'}</td>
+        <td style="color:#aaa;font-size:0.82rem;white-space:nowrap;">${d.date}</td>
+        <td><button class="del-btn" onclick="deleteEntry(${d.id})">🗑</button></td>
+      </tr>`).join('');
+  }
+
+  function searchTable(q) {
+    renderAllTable(getFeedback().filter(d =>
+      d.name.toLowerCase().includes(q.toLowerCase()) ||
+      d.service.toLowerCase().includes(q.toLowerCase()) ||
+      d.message.toLowerCase().includes(q.toLowerCase())
+    ));
+  }
+
+  function deleteEntry(id) {
+    if (!confirm('Delete this entry?')) return;
+    localStorage.setItem('county_feedback', JSON.stringify(getFeedback().filter(d => d.id !== id)));
+    loadDashboard();
+  }
+
+  // ============ ANALYTICS ============
+  function renderAnalytics() {
+    const data = getFeedback();
+    const services = {};
+    data.forEach(d => { services[d.service] = (services[d.service]||0) + 1; });
+    const maxSvc = Math.max(...Object.values(services), 1);
+
+    document.getElementById('serviceChart').innerHTML = Object.keys(services).length === 0
+      ? '<p class="no-data">No data yet.</p>'
+      : Object.entries(services).sort((a,b)=>b[1]-a[1]).map(([name,count]) => `
+          <div class="bar-row">
+            <div class="bar-label" title="${esc(name)}">${esc(name)}</div>
+            <div class="bar-wrap"><div class="bar-fill" style="width:${(count/maxSvc*100).toFixed(0)}%"></div></div>
+            <div class="bar-num">${count}</div>
+          </div>`).join('');
+
+    const ratings = {5:0,4:0,3:0,2:0,1:0};
+    data.forEach(d => ratings[d.rating]++);
+    const maxR = Math.max(...Object.values(ratings), 1);
+
+    document.getElementById('ratingChart').innerHTML = !data.length
+      ? '<p class="no-data">No data yet.</p>'
+      : [5,4,3,2,1].map(r => `
+          <div class="r-row">
+            <div class="r-label">${r}★</div>
+            <div class="r-wrap"><div class="r-fill" style="width:${(ratings[r]/maxR*100).toFixed(0)}%"></div></div>
+            <div class="r-num">${ratings[r]}</div>
+          </div>`).join('');
+
+    const total = data.length;
+    const avg   = total ? (data.reduce((s,d)=>s+d.rating,0)/total).toFixed(2) : null;
+    document.getElementById('summaryStats').innerHTML = !total
+      ? '<span class="no-data">No data available yet.</span>'
+      : `<div style="line-height:2.1;font-size:0.9rem;color:var(--mid);">
+          <div>Total Submissions: <strong style="color:var(--dark);">${total}</strong></div>
+          <div>Average Rating: <strong style="color:var(--dark);">${avg} ★</strong></div>
+          <div>5★ Reviews: <strong style="color:var(--dark);">${ratings[5]} (${((ratings[5]/total)*100).toFixed(0)}%)</strong></div>
+          <div>Low Ratings (1–2★): <strong style="color:var(--dark);">${ratings[1]+ratings[2]}</strong></div>
+          <div>Services Covered: <strong style="color:var(--dark);">${Object.keys(services).length}</strong></div>
+        </div>`;
+
+    const top = Object.entries(services).sort((a,b)=>b[1]-a[1])[0];
+    document.getElementById('topService').innerHTML = top
+      ? `<div style="font-size:3.5rem;">🏅</div>
+         <div style="font-size:1rem;font-weight:600;color:var(--dark);margin-top:0.75rem;">${esc(top[0])}</div>
+         <div style="font-size:0.82rem;color:#aaa;margin-top:0.25rem;">${top[1]} submission${top[1]!==1?'s':''}</div>`
+      : `<div style="font-size:3.5rem;">🏅</div><div class="no-data" style="margin-top:0.5rem;">No data yet</div>`;
+  }
+
+  // ============ EXPORT CSV ============
+  function exportCSV() {
+    const data = getFeedback();
+    if (!data.length) { alert('No data to export.'); return; }
+    const headers = ['Name','Email','Service','Rating','Message','Location','Date','Time'];
+    const rows = data.map(d => [`"${d.name}"`,`"${d.email||''}"`,`"${d.service}"`,d.rating,`"${d.message.replace(/"/g,'""')}"`,`"${d.location||''}"`,`"${d.date}"`,`"${d.time}"`].join(','));
+    const blob = new Blob([[headers.join(','),...rows].join('\n')], {type:'text/csv'});
+    const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'county_feedback.csv'});
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+
+  // ============ ADMIN CLEAR ============
+  function adminClear() {
+    if (confirm('⚠️ Delete ALL feedback permanently? This cannot be undone.')) {
+      localStorage.removeItem('county_feedback');
+      loadDashboard();
+    }
+  }
+
+  // ============ XSS PROTECTION ============
+  function esc(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>

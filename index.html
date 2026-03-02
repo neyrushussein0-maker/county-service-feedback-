@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>County Service Feedback Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- =================== NAV =================== -->
+<nav>
+  <div class="nav-logo">
+    🏛️ CountyServe
+    <span>Citizen Feedback Portal</span>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <button onclick="showPage('home')"         class="active" id="nav-home">Home</button>
+    <button onclick="showPage('services')"                   id="nav-services">Services</button>
+    <button onclick="showPage('feedback')"                   id="nav-feedback">Feedback</button>
+    <button onclick="showPage('reports')"                    id="nav-reports">Reports</button>
+    <button onclick="showPage('admin-login')"                id="nav-admin-login" class="nav-admin-btn">🔐 Admin</button>
+  </div>
+</nav>
+
+<!-- =================== HOME =================== -->
+<div id="home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">🌍 Your Voice Matters</div>
+    <h1>Welcome to the <em>County Service</em> Feedback Portal</h1>
+    <p>Help us improve public services in your county. Submit feedback, report issues, and track how your input shapes better governance for all citizens.</p>
+    <div>
+      <button class="btn btn-gold"    onclick="showPage('feedback')">Submit Feedback</button>
+      <button class="btn btn-outline" onclick="showPage('reports')">View Reports</button>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="num" id="stat-total">0</div><p>Total Submissions</p></div>
+    <div class="stat-card"><div class="num" id="stat-avg">—</div><p>Average Rating</p></div>
+    <div class="stat-card"><div class="num">8</div><p>County Services</p></div>
+    <div class="stat-card"><div class="num">24/7</div><p>Portal Availability</p></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">Three simple steps to make your voice heard</p>
+    <div class="info-grid">
+      <div class="info-card"><div class="icon">🔍</div><h3>1. Browse Services</h3><p>Explore the list of county services offered and find the one your feedback relates to.</p></div>
+      <div class="info-card"><div class="icon">✍️</div><h3>2. Submit Feedback</h3><p>Fill out our simple feedback form and rate your experience using our star system.</p></div>
+      <div class="info-card"><div class="icon">📊</div><h3>3. Track Reports</h3><p>View all citizen submissions in the Reports page, displayed in real-time.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== SERVICES =================== -->
+<div id="services" class="page">
+  <div class="services-hero">
+    <h2>County Services</h2>
+    <p>Browse all available government services in your county</p>
+  </div>
+  <div class="section">
+    <div class="services-grid">
+      <div class="service-card"><div class="s-icon">🏥</div><h3>Health &amp; Medical Services</h3><p>County hospitals, clinics, vaccination programs, maternal care, and community health officers.</p><span class="service-tag">Essential</span></div>
+      <div class="service-card"><div class="s-icon">🎓</div><h3>Education Services</h3><p>County bursaries, school support programs, adult education, and early childhood development centers.</p><span class="service-tag">Essential</span></div>
+      <div class="service-card"><div class="s-icon">🛣️</div><h3>Roads &amp; Infrastructure</h3><p>Road construction, maintenance, street lighting, bridges, and infrastructure development projects.</p><span class="service-tag gold">Development</span></div>
+      <div class="service-card"><div class="s-icon">💧</div><h3>Water &amp; Sanitation</h3><p>Clean water supply, sewage systems, waste collection, and sanitation services for all residents.</p><span class="service-tag">Essential</span></div>
+      <div class="service-card"><div class="s-icon">🌾</div><h3>Agriculture &amp; Food</h3><p>Farming support, subsidized seeds, fertilizers, extension officers, and market linkage programs.</p><span class="service-tag gold">Development</span></div>
+      <div class="service-card"><div class="s-icon">🔒</div><h3>Public Safety &amp; Security</h3><p>County enforcement, community policing, disaster response, and emergency management services.</p><span class="service-tag red">Critical</span></div>
+      <div class="service-card"><div class="s-icon">📑</div><h3>Licensing &amp; Permits</h3><p>Business permits, trade licenses, building approvals, land rates, and county regulatory services.</p><span class="service-tag gold">Regulatory</span></div>
+      <div class="service-card"><div class="s-icon">🌳</div><h3>Environment &amp; Parks</h3><p>Environmental conservation, public parks, recreation centers, and green space management.</p><span class="service-tag">Community</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== FEEDBACK =================== -->
+<div id="feedback" class="page">
+  <div class="feedback-container">
+    <div class="toast" id="toast">✅ Feedback submitted successfully! Thank you.</div>
+    <div class="form-card">
+      <h2>Submit Your Feedback</h2>
+      <p class="subtitle">Your input helps us improve county services for everyone.</p>
+      <form id="feedbackForm" onsubmit="submitFeedback(event)">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="f-name" placeholder="e.g. Jane Otieno" required></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="f-email" placeholder="jane@email.com"></div>
+        </div>
+        <div class="form-group">
+          <label>County Service *</label>
+          <select id="f-service" required>
+            <option value="">— Select a service —</option>
+            <option>Health &amp; Medical Services</option>
+            <option>Education Services</option>
+            <option>Roads &amp; Infrastructure</option>
+            <option>Water &amp; Sanitation</option>
+            <option>Agriculture &amp; Food</option>
+            <option>Public Safety &amp; Security</option>
+            <option>Licensing &amp; Permits</option>
+            <option>Environment &amp; Parks</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Rate Your Experience *</label>
+          <div class="star-rating">
+            <input type="radio" name="rating" id="s5" value="5"><label for="s5">★</label>
+            <input type="radio" name="rating" id="s4" value="4"><label for="s4">★</label>
+            <input type="radio" name="rating" id="s3" value="3"><label for="s3">★</label>
+            <input type="radio" name="rating" id="s2" value="2"><label for="s2">★</label>
+            <input type="radio" name="rating" id="s1" value="1"><label for="s1">★</label>
+          </div>
+          <div class="rating-text" id="rating-text">Click to rate</div>
+        </div>
+        <div class="form-group"><label>Your Feedback *</label><textarea id="f-message" placeholder="Describe your experience in detail..." required></textarea></div>
+        <div class="form-group"><label>Ward / Sub-County</label><input type="text" id="f-location" placeholder="e.g. Westlands, Nyando..."></div>
+        <button type="submit" class="submit-btn">📤 Submit Feedback</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- =================== REPORTS =================== -->
+<div id="reports" class="page">
+  <div class="reports-header">
+    <h2>📊 Feedback Reports</h2>
+    <p>All citizen submissions — stored locally in your browser</p>
+  </div>
+  <div class="reports-container">
+    <div class="summary-bar">
+      <div class="s-stat"><div class="n" id="r-total">0</div><p>Total Feedback</p></div>
+      <div class="s-stat"><div class="n" id="r-avg">—</div><p>Avg Rating</p></div>
+      <div class="s-stat"><div class="n" id="r-high">0</div><p>5★ Reviews</p></div>
+      <div class="s-stat"><div class="n" id="r-low">0</div><p>Low Ratings (≤2)</p></div>
+    </div>
+    <div class="reports-controls">
+      <select class="filter-select" id="filterService" onchange="renderReports()">
+        <option value="">All Services</option>
+        <option>Health &amp; Medical Services</option>
+        <option>Education Services</option>
+        <option>Roads &amp; Infrastructure</option>
+        <option>Water &amp; Sanitation</option>
+        <option>Agriculture &amp; Food</option>
+        <option>Public Safety &amp; Security</option>
+        <option>Licensing &amp; Permits</option>
+        <option>Environment &amp; Parks</option>
+      </select>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <select class="filter-select" id="filterRating" onchange="renderReports()">
+          <option value="">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+        <button class="clear-btn" onclick="clearAll()">🗑 Clear All</button>
+      </div>
+    </div>
+    <div class="feedback-list" id="feedbackList"></div>
+  </div>
+</div>
+
+<!-- =================== ADMIN LOGIN =================== -->
+<div id="admin-login" class="page">
+  <div class="admin-login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="login-icon">🔐</div>
+        <h2>Admin Login</h2>
+        <p>Restricted — County Staff Only</p>
+      </div>
+      <div class="login-error" id="loginError">❌ Invalid username or password. Try again.</div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group"><label>Username</label><input type="text" id="admin-user" placeholder="Enter username"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="admin-pass" placeholder="Enter password"></div>
+        <button type="submit" class="submit-btn">Login to Dashboard</button>
+      </form>
+      <!-- <p class="login-hint">Demo credentials: <strong>admin</strong> / <strong>admin123</strong></p> -->
+    </div>
+  </div>
+</div>
+
+<!-- =================== ADMIN DASHBOARD =================== -->
+<div id="admin-dashboard" class="page">
+
+  <div class="admin-subnav">
+    <button onclick="showAdminSection('overview')"    class="active" id="asub-overview">📊 Overview</button>
+    <button onclick="showAdminSection('all-feedback')"              id="asub-all-feedback">💬 All Feedback</button>
+    <button onclick="showAdminSection('analytics')"                 id="asub-analytics">📈 Analytics</button>
+    <button onclick="showAdminSection('settings')"                  id="asub-settings">⚙️ Settings</button>
+    <button onclick="handleLogout()" class="subnav-logout">🚪 Logout</button>
+  </div>
+
+  <!-- Overview -->
+  <div id="asec-overview" class="admin-section active">
+    <div class="section" style="padding-top:2rem;">
+      <h2 class="section-title">Dashboard Overview</h2>
+      <p class="section-sub">Welcome back, Admin — summary of all citizen feedback</p>
+      <div class="admin-stats-grid">
+        <div class="admin-stat-card" style="border-top-color:var(--green);">
+          <div class="asc-label">Total Feedback</div>
+          <div class="asc-value" id="ov-total">0</div>
+          <div class="asc-sub">All submissions</div>
+        </div>
+        <div class="admin-stat-card" style="border-top-color:var(--gold);">
+          <div class="asc-label">Average Rating</div>
+          <div class="asc-value" id="ov-avg">—</div>
+          <div class="asc-sub">Out of 5 stars</div>
+        </div>
+        <div class="admin-stat-card" style="border-top-color:#3498db;">
+          <div class="asc-label">5★ Excellent</div>
+          <div class="asc-value" id="ov-five">0</div>
+          <div class="asc-sub">Highest rated</div>
+        </div>
+        <div class="admin-stat-card" style="border-top-color:var(--red);">
+          <div class="asc-label">Low Ratings</div>
+          <div class="asc-value" id="ov-low">0</div>
+          <div class="asc-sub">Rated 1 or 2 stars</div>
+        </div>
+      </div>
+      <div class="table-card" style="margin-top:2rem;">
+        <div class="table-header">
+          <h3>Recent Submissions</h3>
+          <span style="font-size:0.82rem;color:var(--mid);">Last 5 entries</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Name</th><th>Service</th><th>Rating</th><th>Date</th></tr></thead>
+            <tbody id="recentTable"><tr><td colspan="4" class="table-empty">No feedback yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Feedback -->
+  <div id="asec-all-feedback" class="admin-section">
+    <div class="section" style="padding-top:2rem;">
+      <h2 class="section-title">All Feedback</h2>
+      <p class="section-sub">Browse, search and manage all citizen submissions</p>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Submissions Table</h3>
+          <input class="search-input" type="text" placeholder="🔍 Search name, service, message..." oninput="searchTable(this.value)">
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Service</th><th>Rating</th><th>Message</th><th>Location</th><th>Date</th><th></th></tr></thead>
+            <tbody id="allTable"><tr><td colspan="8" class="table-empty">No feedback yet.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Analytics -->
+  <div id="asec-analytics" class="admin-section">
+    <div class="section" style="padding-top:2rem;">
+      <h2 class="section-title">Analytics</h2>
+      <p class="section-sub">Visual breakdown of citizen feedback</p>
+      <div class="charts-grid">
+        <div class="chart-card"><h3>📊 Feedback by Service</h3><div class="bar-chart" id="serviceChart"><p class="no-data">No data yet.</p></div></div>
+        <div class="chart-card"><h3>⭐ Rating Distribution</h3><div class="rating-bars" id="ratingChart"><p class="no-data">No data yet.</p></div></div>
+        <div class="chart-card"><h3>📝 Summary Statistics</h3><div id="summaryStats" class="no-data">No data available yet.</div></div>
+        <div class="chart-card" style="text-align:center;"><h3>🏆 Top Rated Service</h3><div id="topService" style="padding:1.5rem 0;"><div style="font-size:3.5rem;">🏅</div><div class="no-data" style="margin-top:0.5rem;">No data yet</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div id="asec-settings" class="admin-section">
+    <div class="section" style="padding-top:2rem;">
+      <h2 class="section-title">Settings</h2>
+      <p class="section-sub">Admin configuration and data management</p>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>🔐 Admin Credentials</h3>
+          <div class="setting-row"><span>Username</span><strong>admin</strong></div>
+          <div class="setting-row"><span>Password</span><strong>admin123</strong></div>
+          <div class="setting-row"><span>Role</span><span class="pill pill-green">Super Admin</span></div>
+          <div class="setting-row"><span>Access</span><span class="pill pill-blue">Full Access</span></div>
+        </div>
+        <div class="settings-card">
+          <h3>⚙️ Portal Settings</h3>
+          <div class="setting-row"><span>Public Feedback</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Show Reports</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Email Alerts</span><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="setting-row"><span>Anonymous OK</span><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+        </div>
+        <div class="settings-card">
+          <h3>🗄️ Data Management</h3>
+          <div class="setting-row"><span>Total Records</span><strong id="set-total">0</strong></div>
+          <div class="setting-row"><span>Storage Used</span><strong id="set-storage">0 KB</strong></div>
+          <div class="setting-row"><span>Export</span><button class="action-btn green-btn" onclick="exportCSV()">📥 Export CSV</button></div>
+          <div class="setting-row"><span>Clear All</span><button class="action-btn red-btn" onclick="adminClear()">🗑 Delete All</button></div>
+        </div>
+        <div class="settings-card">
+          <h3>ℹ️ System Info</h3>
+          <div class="setting-row"><span>Portal Name</span><strong>CountyServe</strong></div>
+          <div class="setting-row"><span>Version</span><span class="pill pill-gold">v1.0.0</span></div>
+          <div class="setting-row"><span>Storage</span><strong>LocalStorage</strong></div>
+          <div class="setting-row"><span>Status</span><span class="pill pill-green">● Online</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- /admin-dashboard -->
+
+<!-- =================== FOOTER =================== -->
+<footer>
+  <p>© 2024 <span>County Service Feedback Portal</span> · Built for citizens · Data stored locally on your device</p>
+  <p style="margin-top:0.5rem;">
+    <a href="admin.html" style="color:rgba(255,255,255,0.2);text-decoration:none;font-size:0.75rem;letter-spacing:1px;">Admin</a>
+  </p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
